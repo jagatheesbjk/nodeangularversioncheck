@@ -94,3 +94,18 @@ Node Angular Version Checking
   Ex:
   echo "This is test mail to check" | mail -s "Alert Mail" abcdef@gmail.com
   ```
+
+- Finally run this script as mention below
+  ```Bash Script
+  chmod +x nodeangularversioncheck.sh
+  ./nodeangularversioncheck.sh
+  ```
+
+- Adding cron job for every week mention below
+  ```cron job
+  crontab -e
+  0 0 * * 1 /<mention-with-full-path-of-you-location-script>/nodeangularversioncheck.sh
+  Ex:
+  0 0 * * 1 /home/ubuntu/nodeangularversioncheck.sh
+  ```
+  *This script will trigger mail at every monday*
