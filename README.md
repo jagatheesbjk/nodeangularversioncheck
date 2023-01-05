@@ -3,7 +3,7 @@ Node Angular Version Checking
 *This script is used for check node, npm, angular version and send server started mail also, for this you need to install postfix with mail and configure it with gmail app password.*
 ## Mail Installation and Configuration with gmail app password in Linux
 
-Centos:
+### Centos:
 
 - Install packages
   ```RPM Packages
@@ -48,9 +48,49 @@ Centos:
 
 - Once complete give below mentioned.
   ```mail command
-  mail -s "<Subject> <mail-id to send>
+  mail -s "<Subject>" <mail-id to send>
   Ex:
   echo "This is test mail to check" | mail -s "Alert Mail" abcdef@gmail.com
   ```
 
-   
+### Ubuntu
+- Install packages
+  ```RPM Packages
+  sudo apt install libsasl2-modules postfix mailutils
+  ```
+  - In that installation it ask menu give option `Internet site`
+  - Next menu enter and verify fully qualifed domain name of your host you can see in by give command `hostname -f`
+  - And then check with given command after installation `cat /etc/postfix/main.cf | grep ^myhostname`
+  
+  *Generate Google App Password that step already mentioned above.*
+
+- Postfix & Gmail Credential Configuration
+  - Create sasl passwd file for authentication in location `/etc/postfix/sasl_passwd`
+   ```Mail Config
+   [smtp.gmail.com]:587 <Gmail-id>:<AppPassword>
+   ```
+  - Once complete save it
+  - Give command `postmap /etc/postfix/sasl_passwd`
+
+- Postfix Configuration
+  ```Conf Edit
+  edit /etc/postfix/main.cf file
+  vi /etc/postfix/main.cf
+  edit add in row relayhost = [smtp.gmail.com]:587
+  ```
+  *at the end of line add below content:*
+  ```Conf add
+  smtp_sasl_auth_enable = yes
+  smtp_sasl_security_options = noanonymous
+  smtp_sasl_password_maps = hash:/etc/postfix/sasl/sasl_passwd
+  smtp_tls_security_level = encrypt
+  smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+  ```
+  - sudo systemctl restart postfix
+  
+- Once complete give below mentioned.
+  ```mail command
+  mail -s "<Subject>" <mail-id to send>
+  Ex:
+  echo "This is test mail to check" | mail -s "Alert Mail" abcdef@gmail.com
+  ```
